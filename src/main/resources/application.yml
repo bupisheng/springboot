@@ -1,0 +1,49 @@
+#更改springboot端口号(默认是8080)  
+server: 
+  port: 8088
+spring: 
+  datasource: 
+    url: jdbc:mysql://localhost:3306/springboot
+    username: root
+    password: admin
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa: 
+    hibernate:  
+      ddl-auto: update
+    show-sql: true
+#redis配置  
+  redis: 
+    host: 127.0.0.1
+    port: 6379
+    pool:
+      max-idle: 8
+      min-idle: 0
+      max-active: 8
+      max-wait: 1
+    timeout: 0  
+
+#thymeleaf模板配置  
+  thymeleaf: 
+    prefix: classpath:templates/
+    surfix: .html
+    mode: HTML5
+    encoding: UTF-8
+    context-type: text/html
+    cache: false
+
+#mybatis配置
+mybatis: 
+  type-aliases-package: com.springboot.model
+  mapper-locations: classpath:mapper/*.xml
+  mappers: com.springboot.util.mapper.MyMapper
+  not-empty: false
+  identity: MYSQL
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params:
+    count\: countSql
+    
+    
+    
