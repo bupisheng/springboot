@@ -1,5 +1,8 @@
 package com.springboot.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,5 +34,7 @@ public class Resources {
 	private Integer sort;// 排序
 	@Transient
 	private String checked; // 是否选择
+	@Transient
+	private List<Resources> sonList = new ArrayList<Resources>();
 
 }

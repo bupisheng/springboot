@@ -7,9 +7,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserRole {
+public class AdminRole {
 
-	private String userId;
+	private String adminId;
 	private Integer roleId;
 
 }

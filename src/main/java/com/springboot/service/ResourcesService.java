@@ -12,7 +12,7 @@ public interface ResourcesService extends BaseService<Resources>{
 
     List<Resources> queryAll();
 
-    List<Resources> loadUserResources(Map<String,Object> map);
+    List<Resources> loadAdminResources(Map<String,Object> map);
 
     List<Resources> queryResourcesListWithSelected(Integer rid);
 }

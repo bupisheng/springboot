@@ -20,15 +20,15 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.springboot.model.Resources;
-import com.springboot.model.User;
+import com.springboot.model.Admin;
 import com.springboot.service.ResourcesService;
-import com.springboot.service.UserService;
+import com.springboot.service.AdminService;
 import com.springboot.util.constant.ConstantUtil;
 
 public class MyShiroRealm extends AuthorizingRealm{
 
 	@Autowired
-	private UserService userService;
+	private AdminService userService;
 	@Autowired
 	private ResourcesService resourcesService;
 	
@@ -38,10 +38,10 @@ public class MyShiroRealm extends AuthorizingRealm{
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0) {
-		User user = (User) SecurityUtils.getSubject().getPrincipal();
+		Admin admin = (Admin) SecurityUtils.getSubject().getPrincipal();
 		Map<String, Object> map = new HashMap<String,Object>();
-		map.put("userId", user.getId());
-		List<Resources> resources = resourcesService.loadUserResources(map);
+		map.put("adminId", admin.getId());
+		List<Resources> resources = resourcesService.loadAdminResources(map);
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		for (Resources resource : resources) {
 			info.addStringPermission(resource.getResUrl());
@@ -56,7 +56,7 @@ public class MyShiroRealm extends AuthorizingRealm{
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		//获取用户输入的账号
 		String username = (String) token.getPrincipal();
-		User user = userService.selectByUsername(username);
+		Admin user = userService.selectByUsername(username);
 		if (null == user) {
 			throw new UnknownAccountException();
 		}

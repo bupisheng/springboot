@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.springboot.model.User;
+import com.springboot.model.Admin;
 import com.springboot.util.JSONUtil;
 import com.springboot.util.StringUtil;
 import com.springboot.util.result.Result;
@@ -33,7 +33,7 @@ public class LoginController {
 
 	@ResponseBody
 	@PostMapping(value = "/login")
-	public Result login(HttpServletRequest request, User user) {
+	public Result login(HttpServletRequest request, Admin user) {
 		LOGGER.info("后台用户登录：user={}", JSONUtil.objectToJson(user));
 		if (StringUtil.isEmpty(user.getUsername()) || StringUtil.isEmpty(user.getPassword())) {
 			return ResultUtil.error(ResultConst.CODE_500, ResultConst.USERNAME_OR_PASSWORD_IS_NULL);

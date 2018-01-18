@@ -37,9 +37,9 @@ public class ResourcesServiceImpl extends BaseServiceImpl<Resources> implements 
 	}
 
 	@Override
-	@Cacheable(cacheNames = "resources", key = "#map['userId'].toString()+#map['type']")
-	public List<Resources> loadUserResources(Map<String, Object> map) {
-		return resourcesMapper.loadUserResources(map);
+	//@Cacheable(cacheNames = "resources", key = "#map['adminId'].toString()+#map['type']")
+	public List<Resources> loadAdminResources(Map<String, Object> map) {
+		return resourcesMapper.loadAdminResources(map);
 	}
 
 	@Override

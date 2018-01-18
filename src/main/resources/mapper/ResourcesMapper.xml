@@ -16,15 +16,18 @@
 		ORDER BY sort ASC
   </select>
 
-    <select id="loadUserResources" parameterType="java.util.HashMap" resultType="com.springboot.model.Resources">
+    <select id="loadAdminResources" parameterType="java.util.HashMap" resultType="com.springboot.model.Resources">
         SELECT re.id,re.name,re.parentId,re.resUrl
         FROM t_resources re LEFT JOIN t_role_resources rr
         ON re.id = rr.resourcesId
-        LEFT JOIN t_user_role ur
+        LEFT JOIN t_admin_role ur
         ON rr.roleId =ur.roleId
-        WHERE ur.userId=#{userId}
+        WHERE ur.adminId=#{adminId}
         <if test="type != null">
             AND re.type= #{type}
+        </if>
+        <if test="parentId != null">
+           and re.parentId = #{parentId}
         </if>
         GROUP BY re.id
         ORDER BY re.sort ASC

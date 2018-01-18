@@ -8,7 +8,7 @@
 
   <select id="queryRoleListWithSelected" parameterType="int" resultType="com.springboot.model.Role">
     SELECT r.id,r.roleDesc,
-    (CASE WHEN (SELECT ur.roleId FROM t_user_role ur WHERE ur.userId= #{id} AND ur.roleId = r.id) THEN 1 ELSE 0 END) AS selected
+    (CASE WHEN (SELECT ur.roleId FROM t_admin_role ur WHERE ur.userId= #{id} AND ur.roleId = r.id) THEN 1 ELSE 0 END) AS selected
     FROM t_role r
   </select>
 </mapper>

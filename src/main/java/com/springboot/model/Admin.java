@@ -13,8 +13,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name="t_user")
-public class User implements Serializable{
+@Table(name="t_admin")
+public class Admin implements Serializable{
     
 	/**
 	 * 
