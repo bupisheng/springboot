@@ -37,7 +37,7 @@ layui.use(['element'], function(){
   	//监听导航点击
   	element.on('nav(side)', function(elem){
     	title = elem.find('cite').text();
-    	url = elem.find('a').attr('_href');
+    	url = elem.find('a').attr('src');
     	// alert(url);
 
     	for (var i = 0; i <$('.x-iframe').length; i++) {

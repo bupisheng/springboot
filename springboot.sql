@@ -40,15 +40,17 @@ DROP TABLE IF EXISTS `t_admin`;
 
 CREATE TABLE `t_admin` (
   `id` varchar(50) NOT NULL,
-  `username` varchar(33) DEFAULT NULL,
-  `password` varchar(33) DEFAULT NULL,
+  `username` varchar(40) DEFAULT NULL,
+  `password` varchar(40) DEFAULT NULL,
   `enable` int(10) DEFAULT '1' COMMENT '是否启用',
+  `createTime` datetime DEFAULT NULL,
+  `email` varchar(40) DEFAULT NULL COMMENT '邮箱',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `t_admin` */
 
-insert  into `t_admin`(`id`,`username`,`password`,`enable`) values ('1','admin','3ef7164d1f6167cb9f2658c07d3c2f0a',1);
+insert  into `t_admin`(`id`,`username`,`password`,`enable`,`createTime`,`email`) values ('1','admin','3ef7164d1f6167cb9f2658c07d3c2f0a',1,'2018-01-19 16:45:11','798294336@qq.com'),('2','user','user',1,'2018-01-19 17:43:38',NULL);
 
 /*Table structure for table `t_admin_role` */
 
@@ -79,7 +81,7 @@ CREATE TABLE `t_resources` (
 
 /*Data for the table `t_resources` */
 
-insert  into `t_resources`(`id`,`name`,`resUrl`,`type`,`parentId`,`sort`) values (1,'系统设置','/system',1,0,1),(2,'用户管理','/usersPage',1,1,2),(3,'角色管理','/rolesPage',1,1,3),(4,'资源管理','/resourcesPage',1,1,4),(5,'添加用户','/users/add',2,2,5),(6,'删除用户','/users/delete',2,2,6),(7,'添加角色','/roles/add',2,3,7),(8,'删除角色','/roles/delete',2,3,8),(9,'添加资源','/resources/add',2,4,9),(10,'删除资源','/resources/delete',2,4,10),(11,'分配角色','/users/saveUserRoles',2,2,11),(13,'分配权限','/roles/saveRoleResources',2,3,12);
+insert  into `t_resources`(`id`,`name`,`resUrl`,`type`,`parentId`,`sort`) values (1,'系统设置','/system',1,0,1),(2,'管理员管理','/back/admin/list',1,1,2),(3,'角色管理','/rolesPage',1,1,3),(4,'资源管理','/resourcesPage',1,1,4),(5,'添加用户','/users/add',2,2,5),(6,'删除用户','/users/delete',2,2,6),(7,'添加角色','/roles/add',2,3,7),(8,'删除角色','/roles/delete',2,3,8),(9,'添加资源','/resources/add',2,4,9),(10,'删除资源','/resources/delete',2,4,10),(11,'分配角色','/users/saveUserRoles',2,2,11),(13,'分配权限','/roles/saveRoleResources',2,3,12);
 
 /*Table structure for table `t_role` */
 

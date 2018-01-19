@@ -17,5 +17,9 @@ public class ResultConst {
 	public final static String USER_IS_LOCKED = "用户已被锁定，请联系管理人员";
 
 	public final static String USER_LOGIN_SUCCESS = "登录成功";
+	
+	public final static String GET_DATA_SUCCESS="获取数据成功";
+	
+	public final static String GET_DATA_FAIL="获取数据失败";
 
 }

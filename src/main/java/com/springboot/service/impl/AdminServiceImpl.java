@@ -1,5 +1,6 @@
 package com.springboot.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,23 +11,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.springboot.mapper.AdminMapper;
 import com.springboot.mapper.AdminRoleMapper;
 import com.springboot.model.Admin;
 import com.springboot.model.AdminRole;
 import com.springboot.service.AdminService;
+import com.springboot.util.DateUtils;
+import com.springboot.util.StringUtil;
 
 import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.util.StringUtil;
 
 @Service
 public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminService {
 
 	@Resource
+	private AdminMapper adminMapper;
+	@Resource
 	private AdminRoleMapper adminRoleMapper;
 
 	@Override
-	public PageInfo<Admin> selectByPage(Admin admin, int start, int length) {
-		int page = start / length + 1;
+	public PageInfo<Admin> selectByPage(Admin admin, Integer pageNum, Integer pageSize) {
+		Integer page = pageNum / pageSize + 1;
 		Example example = new Example(Admin.class);
 		Example.Criteria criteria = example.createCriteria();
 		if (StringUtil.isNotEmpty(admin.getUsername())) {
@@ -39,9 +44,9 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
 			criteria.andEqualTo("enable", admin.getEnable());
 		}
 		// 分页查询
-		PageHelper.startPage(page, length);
-		List<Admin> userList = selectByExample(example);
-		return new PageInfo<>(userList);
+		PageHelper.startPage(page, pageSize);
+		List<Admin> adminList = selectByExample(example);
+		return new PageInfo<Admin>(adminList);
 	}
 
 	@Override
@@ -66,5 +71,21 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
 		Example.Criteria criteria = example.createCriteria();
 		criteria.andEqualTo("adminId", adminId);
 		adminRoleMapper.deleteByExample(example);
+	}
+
+	@Override
+	public PageInfo<Admin> selectByPage(Admin admin, Integer pageNum, Integer pageSize, String beginTime,
+			String endTime) {
+		Date beginDate = null, endDate = null;
+		if (StringUtil.isNotEmpty(beginTime)) {
+			beginDate = DateUtils.parseDate(beginTime);
+		}
+		if (StringUtil.isNotEmpty(endTime)) {
+			endDate = DateUtils.parseDate(endTime);
+		}
+		// 分页查询
+		PageHelper.startPage(pageNum, pageSize);
+		List<Admin> adminList = adminMapper.selectAdminList(admin, beginDate, endDate);
+		return new PageInfo<Admin>(adminList);
 	}
 }

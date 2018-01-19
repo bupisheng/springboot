@@ -6,5 +6,34 @@
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="enable" jdbcType="INTEGER" property="enable" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
   </resultMap>
+  
+  <select id="selectAdminList" resultType="com.springboot.model.Admin">
+    select 
+    a.id id,
+    a.username username,
+    a.enable enable,
+    a.createTime createTime,
+    a.email email,
+    r.roleDesc roleName
+    from t_admin a 
+    left join t_admin_role ar 
+    on a.id = ar.adminId
+    left join t_role r
+    on ar.roleId = r.id
+    where 1 = 1 
+    <if test="admin.username != null and admin.username !=''">
+    and a.username like "%${admin.username}%"
+    </if>
+    <if test="beginDate != null ">
+    and a.createTime &gt; #{beginDate}
+    </if>
+    <if test="endDate != null ">
+    and a.createTime &lt; #{endDate}
+    </if>
+    order by a.createTime asc
+  
+  </select>
 </mapper>

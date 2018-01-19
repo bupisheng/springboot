@@ -54,7 +54,7 @@
 					</a>
 						<dl class="layui-nav-child" th:each="son:${menu.sonList}">
 							<dd class="">
-								<a th:href="${son.resUrl}"> <cite th:text="${son.name}">问题列表</cite>
+								<a href="javascript:;" th:src="@{${son.resUrl}}"> <cite th:text="${son.name}"></cite>
 								</a>
 							</dd>
 						</dl>

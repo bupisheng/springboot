@@ -1,11 +1,14 @@
 package com.springboot.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +32,9 @@ public class Admin implements Serializable{
      * 是否启用
      */
     private Integer enable;
+    @Column(name="createTime")
+    private Date createTime;
+    private String email;//邮箱
+    @Transient
+    private String roleName;
 }
