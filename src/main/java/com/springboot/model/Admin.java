@@ -3,7 +3,6 @@ package com.springboot.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,8 +30,7 @@ public class Admin implements Serializable{
     /**
      * 是否启用
      */
-    private Integer enable;
-    @Column(name="createTime")
+    private Integer status;
     private Date createTime;
     private String email;//邮箱
     @Transient

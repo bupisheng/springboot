@@ -21,4 +21,8 @@ public class ConstantUtil {
 
 	public final static Integer RESOURCE_PARENT_NULL = 0;
 
+	public final static Integer STATUS_ENABLE = 1;
+
+	public final static Integer STATUS_UNENABLE = 0;
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
 <meta charset="utf-8" />
 <title></title>
@@ -20,19 +20,23 @@
 		<!--<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>  -->
 	</div>
 	<div class="x-body">
-		<form class="layui-form x-center" action="" style="width: 80%">
+		<form class="layui-form x-center" th:action="@{/back/admin/list}"
+			style="width: 80%" method="get" id="conditionSearch">
+			<input type="hidden" th:value="${page.pageNum}" name="pageNum" />
 			<div class="layui-form-pane" style="margin-top: 15px;">
 				<div class="layui-form-item">
 					<label class="layui-form-label">日期范围</label>
 					<div class="layui-input-inline">
-						<input class="layui-input" placeholder="开始日" id="LAY_demorange_s" />
+						<input class="layui-input" placeholder="开始日" id="LAY_demorange_s"
+							name="beginTime" th:value="${beginTime}" />
 					</div>
 					<div class="layui-input-inline">
-						<input class="layui-input" placeholder="截止日" id="LAY_demorange_e" />
+						<input class="layui-input" placeholder="截止日" id="LAY_demorange_e"
+							name="endTime" th:value="${endTime}" />
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="username" placeholder="请输入登录名"
-							autocomplete="off" class="layui-input" />
+							autocomplete="off" class="layui-input" th:value="${username}" />
 					</div>
 					<div class="layui-input-inline" style="width: 80px">
 						<button class="layui-btn" lay-submit="" lay-filter="sreach">
@@ -46,8 +50,7 @@
 		<button class="layui-btn layui-btn-danger" onclick="delAll()">
 			<i class="layui-icon">&#xe640;</i>批量删除
 		</button>
-		<button class="layui-btn"
-			onclick="admin_add('添加用户','admin-add.html','600','500')">
+		<button class="layui-btn" onclick="admin_add('添加用户','','600','500')">
 			<i class="layui-icon">&#xe608;</i>添加
 		</button>
 		<span class="x-right" style="line-height: 40px">共有数据：<span
@@ -77,17 +80,21 @@
 					<td th:text="${admin.roleName}"></td>
 					<td
 						th:text="${#dates.format(admin.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
-					<td class="td-status"><span
-						class="layui-btn layui-btn-normal layui-btn-mini"
-						th:text="${admin.enable == 1} ? '已启用':'未启用'"> 已启用 </span></td>
-					<td class="td-manage"><a style="text-decoration: none"
-						onclick="admin_stop(this,'10001')" href="javascript:;" title="停用">
-							<i class="layui-icon">&#xe601;</i>
+					<td class="td-status">
+					
+					<span
+						th:class="${admin.status ==1 ?'layui-btn layui-btn-normal layui-btn-mini':'layui-btn layui-btn-disabled layui-btn-mini'}"
+						th:text="${admin.status == 1} ? '已启用':'已停用'"></span></td>
+					<td class="td-manage">
+					<input type="hidden" th:value="${admin.id}"/>
+					<a style="text-decoration: none"
+						th:onclick="${admin.status == 1 ? 'admin_stop(this)':'admin_start(this)'}" href="javascript:;" th:title="${admin.status == 1} ? '禁用':'启用'">
+							<i class="layui-icon" th:text="${admin.status==1 ?'&#xe601;':'&#xe62f;'}"></i>
 					</a> <a title="编辑" href="javascript:;"
 						onclick="admin_edit('编辑','admin-edit.html','4','','510')"
 						class="ml-5" style="text-decoration: none"> <i
 							class="layui-icon">&#xe642;</i>
-					</a> <a title="删除" href="javascript:;" onclick="admin_del(this,'1')"
+					</a> <a title="删除" href="javascript:;" onclick="admin_del(this)"
 						style="text-decoration: none"> <i class="layui-icon">&#xe640;</i>
 					</a></td>
 				</tr>
@@ -95,7 +102,7 @@
 		</table>
 
 		<div id="page">
-		<input type="hidden" th:value="${page.pages}" id="pages"/>
+			<input type="hidden" th:value="${page.pages}" id="pages" />
 		</div>
 	</div>
 	<script type="text/javascript" th:src="@{/js/jquery-1.10.1.min.js}"></script>
@@ -104,7 +111,7 @@
 	<script th:src="@{/lib/layui/layui.js}" charset="utf-8"></script>
 	<script th:src="@{/js/x-layui.js}" charset="utf-8"></script>
 
-	<script>
+	<script th:inline="javascript">	
 		layui.use([ 'laydate', 'element', 'laypage', 'layer' ], function() {
 			$ = layui.jquery;//jquery
 			laydate = layui.laydate;//日期插件
@@ -112,17 +119,15 @@
 			laypage = layui.laypage;//分页
 			layer = layui.layer;//弹出层
 
-			//以上模块根据需要引入
-			var pages = $("#pages").val();
 			laypage({
 				cont : 'page',
-				pages : pages,
-				groups : 5
-			//连续显示分页数
+				pages : [[${page.pages}]],
+				groups : 5,
+				curr:[[${page.pageNum}]]
 			});
 
 			var start = {
-				min : laydate.now(),
+				//min : laydate.now(),
 				max : '2099-06-16 23:59:59',
 				istoday : false,
 				choose : function(datas) {
@@ -148,9 +153,15 @@
 				end.elem = this
 				laydate(end);
 			}
+			
+			$("#page").find("a").click(function(){
+				var pageNum = $(this).attr("data-page");
+				$("input[name='pageNum']").val(pageNum);
+				$("#conditionSearch").submit();
+			});
 
-		});
-
+		});	
+        
 		//批量删除提交
 		function delAll() {
 			layer.confirm('确认要删除吗？', function(index) {
@@ -162,57 +173,84 @@
 		}
 		/*添加*/
 		function admin_add(title, url, w, h) {
-			x_admin_show(title, url, w, h);
+			x_admin_show(title,[[@{/back/admin/toAdd}]], w, h);
 		}
 
 		/*停用*/
-		function admin_stop(obj, id) {
-			layer
-					.confirm(
-							'确认要停用吗？',
-							function(index) {
-								//发异步把用户状态进行更改
-								$(obj)
-										.parents("tr")
-										.find(".td-manage")
-										.prepend(
-												'<a style="text-decoration:none" onClick="admin_start(this,id)" href="javascript:;" title="启用"><i class="layui-icon">&#xe62f;</i></a>');
-								$(obj)
-										.parents("tr")
-										.find(".td-status")
-										.html(
-												'<span class="layui-btn layui-btn-disabled layui-btn-mini">已停用</span>');
-								$(obj).remove();
-								layer.msg('已停用!', {
+		function admin_stop(obj) {
+			var id = $(obj).siblings("input[type='hidden']").val();
+			layer.confirm('确认要停用吗？',function(index) {
+				$.ajax({
+					type : "POST",
+					url : [[@{/back/admin/updateStatus}]],
+					data : {
+						id : id
+					},
+					success : function(data) {
+						if (data.res == 200) {
+							layer.alert(data.msg, {
+								icon : 6
+							}, function() {
+								  //发异步把用户状态进行更改
+								  $(obj).parents("tr").find(".td-manage")
+									.prepend('<a style="text-decoration:none" onClick="admin_start(this)" href="javascript:;" title="启用"><i class="layui-icon">&#xe62f;</i></a>');
+								  $(obj).parents("tr").find(".td-status")
+									.html('<span class="layui-btn layui-btn-disabled layui-btn-mini">已停用</span>');
+								  $(obj).remove();
+								  layer.msg('已停用!', {
 									icon : 5,
 									time : 1000
-								});
+								  });
 							});
+						} else {
+							layer.msg(data.msg, {
+								icon : 7,
+								time : 1500
+							});
+						}
+					}
+				});	
+				
+		
+			});
 		}
 
 		/*启用*/
 		function admin_start(obj, id) {
-			layer
-					.confirm(
-							'确认要启用吗？',
-							function(index) {
+			var id = $(obj).siblings("input[type='hidden']").val();
+			layer.confirm('确认要启用吗？',function(index) {
+				$.ajax({
+					type : "POST",
+					url : [[@{/back/admin/updateStatus}]],
+					data : {
+						id : id
+					},
+					success : function(data) {
+						if (data.res == 200) {
+							layer.alert(data.msg, {
+								icon : 6
+							}, function() {
 								//发异步把用户状态进行更改
-								$(obj)
-										.parents("tr")
-										.find(".td-manage")
-										.prepend(
-												'<a style="text-decoration:none" onClick="admin_stop(this,id)" href="javascript:;" title="停用"><i class="layui-icon">&#xe601;</i></a>');
-								$(obj)
-										.parents("tr")
-										.find(".td-status")
-										.html(
-												'<span class="layui-btn layui-btn-normal layui-btn-mini">已启用</span>');
+								$(obj).parents("tr").find(".td-manage")
+									.prepend('<a style="text-decoration:none" onClick="admin_stop(this,id)" href="javascript:;" title="停用"><i class="layui-icon">&#xe601;</i></a>');
+								$(obj).parents("tr").find(".td-status")
+									.html('<span class="layui-btn layui-btn-normal layui-btn-mini">已启用</span>');
 								$(obj).remove();
 								layer.msg('已启用!', {
 									icon : 6,
 									time : 1000
 								});
 							});
+						} else {
+							layer.msg(data.msg, {
+								icon : 7,
+								time : 1500
+							});
+						}
+					}
+				});	
+			
+			});
 		}
 		//编辑
 		function admin_edit(title, url, id, w, h) {

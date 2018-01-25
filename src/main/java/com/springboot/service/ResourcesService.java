@@ -15,4 +15,8 @@ public interface ResourcesService extends BaseService<Resources>{
     List<Resources> loadAdminResources(Map<String,Object> map);
 
     List<Resources> queryResourcesListWithSelected(Integer rid);
+    
+    PageInfo<Resources> selectByPage(Integer pageNum, Integer pageSize);
+    
+    List<Resources> queryAllMenus(Resources resources);
 }

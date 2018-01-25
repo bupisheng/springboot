@@ -1,45 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.springboot.mapper.ResourcesMapper">
-  <resultMap id="BaseResultMap" type="com.springboot.model.Resources">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="resUrl" jdbcType="VARCHAR" property="resUrl" />
-    <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="parentId" jdbcType="INTEGER" property="parentId" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
-  </resultMap>
+	<resultMap id="BaseResultMap" type="com.springboot.model.Resources">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="res_url" jdbcType="VARCHAR" property="resUrl" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="parent_id" jdbcType="INTEGER" property="parentId" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+	</resultMap>
 
-  <select id="queryAll" resultType="com.springboot.model.Resources">
-      	SELECT id,name,parentId,resUrl,type,sort
+	<select id="queryAll" resultMap="BaseResultMap">
+		SELECT id,name,parent_id,res_url,type,sort
 		FROM t_resources
 		ORDER BY sort ASC
-  </select>
+	</select>
 
-    <select id="loadAdminResources" parameterType="java.util.HashMap" resultType="com.springboot.model.Resources">
-        SELECT re.id,re.name,re.parentId,re.resUrl
-        FROM t_resources re LEFT JOIN t_role_resources rr
-        ON re.id = rr.resourcesId
-        LEFT JOIN t_admin_role ur
-        ON rr.roleId =ur.roleId
-        WHERE ur.adminId=#{adminId}
-        <if test="type != null">
-            AND re.type= #{type}
-        </if>
-        <if test="parentId != null">
-           and re.parentId = #{parentId}
-        </if>
-        GROUP BY re.id
-        ORDER BY re.sort ASC
-    </select>
-
-    <select id="queryResourcesListWithSelected" parameterType="int" resultType="com.springboot.model.Resources">
-        SELECT re.id,re.name,re.parentId,re.resUrl,re.type,
-		(CASE WHEN EXISTS(SELECT 1
-		FROM t_role_resources rr WHERE rr.resourcesId=re.id AND rr.roleId=#{rid})
-		THEN 'true' ELSE 'false' END) AS checked
-		FROM t_resources re
-		WHERE re.parentId !=0
+	<select id="loadAdminResources" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		SELECT re.id,re.name,re.parent_id,re.res_url
+		FROM t_resources re LEFT JOIN t_role_resources rr
+		ON re.id = rr.resources_id
+		LEFT JOIN t_admin_role ur
+		ON rr.role_id =ur.role_id
+		WHERE ur.admin_id=#{adminId}
+		<if test="type != null">
+			AND re.type= #{type}
+		</if>
+		<if test="parentId != null">
+			and re.parent_id = #{parentId}
+		</if>
+		GROUP BY re.id
 		ORDER BY re.sort ASC
-    </select>
+	</select>
+
+	<select id="queryResourcesListWithSelected" parameterType="int"
+		resultMap="BaseResultMap">
+		SELECT re.id,re.name,re.parent_id,re.res_url,re.type,
+		(CASE WHEN
+		EXISTS(SELECT 1
+		FROM t_role_resources rr WHERE rr.resources_id=re.id
+		AND rr.role_id=#{rid})
+		THEN 'true' ELSE 'false' END) AS checked
+		FROM
+		t_resources re
+		WHERE re.parent_id !=0
+		ORDER BY re.sort ASC
+	</select>
+
+	<select id="queryAllWithParentName" resultType="com.springboot.model.Resources">
+		SELECT
+		id id,
+		name name,
+		parent_id parentId,
+		res_url resUrl,
+		TYPE type,
+		sort sort,
+		(SELECT name FROM t_resources WHERE id = parentId) AS parentName
+		FROM t_resources
+		ORDER BY sort ASC
+	</select>
 </mapper>

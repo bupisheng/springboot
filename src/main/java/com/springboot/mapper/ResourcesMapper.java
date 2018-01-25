@@ -13,4 +13,6 @@ public interface ResourcesMapper extends MyMapper<Resources> {
 	List<Resources> loadAdminResources(Map<String, Object> map);
 
 	List<Resources> queryResourcesListWithSelected(Integer rid);
+	
+	List<Resources> queryAllWithParentName();
 }

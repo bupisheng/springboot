@@ -74,7 +74,7 @@ public class ShiroConfig {
 		// 拦截器
 		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-		//filterChainDefinitionMap.put("/loginout", "loginout");
+		filterChainDefinitionMap.put("/logout", "logout");
 		filterChainDefinitionMap.put("/js/**", "anon");
 		filterChainDefinitionMap.put("/css/**", "anon");
 		filterChainDefinitionMap.put("/lib/**", "anon");

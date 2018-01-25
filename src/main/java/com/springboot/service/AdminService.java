@@ -1,7 +1,5 @@
 package com.springboot.service;
 
-import java.util.Date;
-
 import com.github.pagehelper.PageInfo;
 import com.springboot.model.Admin;
 
@@ -14,4 +12,6 @@ public interface AdminService extends BaseService<Admin> {
 	Admin selectByUsername(String username);
 
 	void delAdmin(Integer adminId);
+	
+	void save(Admin admin,String roleId);
 }

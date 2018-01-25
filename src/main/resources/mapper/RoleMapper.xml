@@ -3,12 +3,12 @@
 <mapper namespace="com.springboot.mapper.RoleMapper">
   <resultMap id="BaseResultMap" type="com.springboot.model.Role">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="roleDesc" jdbcType="VARCHAR" property="roleDesc" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
   </resultMap>
 
   <select id="queryRoleListWithSelected" parameterType="int" resultType="com.springboot.model.Role">
-    SELECT r.id,r.roleDesc,
-    (CASE WHEN (SELECT ur.roleId FROM t_admin_role ur WHERE ur.userId= #{id} AND ur.roleId = r.id) THEN 1 ELSE 0 END) AS selected
+    SELECT r.id,r.role_name,
+    (CASE WHEN (SELECT ur.role_id FROM t_admin_role ur WHERE ur.admin_id= #{id} AND ur.role_id = r.id) THEN 1 ELSE 0 END) AS selected
     FROM t_role r
   </select>
 </mapper>

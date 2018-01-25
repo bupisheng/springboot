@@ -6,6 +6,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.springboot.model.Admin;
 import com.springboot.util.JSONUtil;
 import com.springboot.util.StringUtil;
+import com.springboot.util.constant.ConstantUtil;
 import com.springboot.util.result.Result;
 import com.springboot.util.result.ResultConst;
 import com.springboot.util.result.ResultUtil;
@@ -31,6 +33,11 @@ public class LoginController {
 		return "/login";
 	}
 
+	@GetMapping(value = "/")
+	public String index() {
+		return "/login";
+	}
+	
 	@ResponseBody
 	@PostMapping(value = "/login")
 	public Result login(HttpServletRequest request, Admin user) {
@@ -54,6 +61,16 @@ public class LoginController {
 			return ResultUtil.error(ResultConst.CODE_500, ResultConst.USERNAME_OR_PASSWORD_ERROR);
 		}
 
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest request){
+		Subject subject = SecurityUtils.getSubject();
+		subject.logout();
+		Session session = subject.getSession();
+		session.removeAttribute(ConstantUtil.SESSION_USER);
+		session.removeAttribute(ConstantUtil.SESSION_USER_ID);
+		return "/login";
 	}
 
 }

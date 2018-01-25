@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import lombok.Getter;
@@ -22,6 +23,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Table(name="t_resources")
 public class Resources {
 
 	@Id
@@ -36,5 +38,7 @@ public class Resources {
 	private String checked; // 是否选择
 	@Transient
 	private List<Resources> sonList = new ArrayList<Resources>();
+	@Transient
+	private String parentName;
 
 }

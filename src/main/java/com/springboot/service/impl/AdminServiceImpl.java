@@ -18,6 +18,8 @@ import com.springboot.model.AdminRole;
 import com.springboot.service.AdminService;
 import com.springboot.util.DateUtils;
 import com.springboot.util.StringUtil;
+import com.springboot.util.UuidUtil;
+import com.springboot.util.constant.ConstantUtil;
 
 import tk.mybatis.mapper.entity.Example;
 
@@ -40,8 +42,8 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
 		if (admin.getId() != null) {
 			criteria.andEqualTo("id", admin.getId());
 		}
-		if (admin.getEnable() != null) {
-			criteria.andEqualTo("enable", admin.getEnable());
+		if (admin.getStatus() != null) {
+			criteria.andEqualTo("enable", admin.getStatus());
 		}
 		// 分页查询
 		PageHelper.startPage(page, pageSize);
@@ -87,5 +89,22 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
 		PageHelper.startPage(pageNum, pageSize);
 		List<Admin> adminList = adminMapper.selectAdminList(admin, beginDate, endDate);
 		return new PageInfo<Admin>(adminList);
+	}
+
+	@Override
+	@Transactional
+	public void save(Admin admin, String roleId) {
+		// 保存用户
+		String uuId = UuidUtil.get32UUID();
+		admin.setId(uuId);
+		admin.setCreateTime(new Date());
+		admin.setStatus(ConstantUtil.STATUS_ENABLE);
+		save(admin);
+		// 保存角色中间表
+		AdminRole adminRole = new AdminRole();
+		adminRole.setAdminId(uuId);
+		adminRole.setRoleId(Integer.parseInt(roleId));
+		adminRoleMapper.insert(adminRole);
+
 	}
 }

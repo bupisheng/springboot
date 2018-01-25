@@ -60,7 +60,7 @@ public class MyShiroRealm extends AuthorizingRealm{
 		if (null == user) {
 			throw new UnknownAccountException();
 		}
-		if (0 == user.getEnable()) {
+		if (0 == user.getStatus()) {
 			throw new LockedAccountException();//账号被锁定
 		}
 		SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user,user.getPassword(),ByteSource.Util.bytes(username),getName());

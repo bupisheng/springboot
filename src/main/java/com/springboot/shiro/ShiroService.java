@@ -30,7 +30,7 @@ public class ShiroService {
 	
 	public Map<String, String> loadFilterChainDefinitions(){
 		Map<String, String> map = new LinkedHashMap<String,String>();
-		map.put("loginout", "loginout");
+		map.put("/logout", "logout");
 		map.put("/css/**", "anon");
 		map.put("/js/**", "anon");
 		map.put("/images/**", "anon");

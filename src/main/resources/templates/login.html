@@ -62,17 +62,16 @@
 	<script th:src="@{/js/jquery-1.10.1.min.js}" charset="utf-8">
 		
 	</script>
-	<script th:src="@{/js/layer.js}" charset="utf-8">
+	<script th:src="@{/lib/layui/layui.js}" charset="utf-8">
 		
 	</script>
 
-	<script>
+	<script th:inline="javascript">
+		layui.use([ 'layer' ], function() {
+			layer = layui.layer
+		});
+
 		$(function() {
-			
-			var pathName = document.location.pathname;
-			var index = pathName.substr(1).indexOf("/");
-			var basePath = pathName.substr(0, index + 1);
-			
 			$('.x-login-right li').click(function(event) {
 				color = $(this).attr('color');
 				$('body').css('background-color', color);
@@ -82,22 +81,16 @@
 				var password = $.trim($("input[name='password']").val());
 
 				if ("" == username) {
-					layer.open({
-						title : '提示',
-						content : "请输入账号"
-					});
-					return;
+					layer.msg('请输入用户名',{icon:7,time:1500});
+					return false;
 				}
 				if ("" == password) {
-					layer.open({
-						title : '提示',
-						content : "请输入密码"
-					});
-					return;
+					layer.msg('请输入密码',{icon:7,time:1500});
+					return false;
 				}
 				$.ajax({
 					type : "POST",
-					url : basePath + "/login?random=" + Math.random(),
+					url : [[@{/login}]],
 					data : {
 						username : username,
 						password : password
@@ -105,12 +98,10 @@
 					success : function(data) {
 						if (data.res == 200) {
 							//登录成功跳转到主界面
-							location.href = basePath + '/back/index';
+							layer.msg('登录成功',{icon:1,time:1500});
+							location.href = '/back/index';
 						} else {
-							layer.open({
-								title : '提示',
-								content : data.msg
-							});
+							layer.msg(data.msg,{icon:2,time:1500});
 						}
 					}
 				});

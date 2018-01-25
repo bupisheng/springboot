@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -37,7 +36,8 @@ public class ResourcesServiceImpl extends BaseServiceImpl<Resources> implements 
 	}
 
 	@Override
-	//@Cacheable(cacheNames = "resources", key = "#map['adminId'].toString()+#map['type']")
+	// @Cacheable(cacheNames = "resources", key =
+	// "#map['adminId'].toString()+#map['type']")
 	public List<Resources> loadAdminResources(Map<String, Object> map) {
 		return resourcesMapper.loadAdminResources(map);
 	}
@@ -45,6 +45,24 @@ public class ResourcesServiceImpl extends BaseServiceImpl<Resources> implements 
 	@Override
 	public List<Resources> queryResourcesListWithSelected(Integer rid) {
 		return resourcesMapper.queryResourcesListWithSelected(rid);
+	}
+
+	@Override
+	public PageInfo<Resources> selectByPage(Integer pageNum, Integer pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		List<Resources> list = resourcesMapper.queryAllWithParentName();
+		return new PageInfo<Resources>(list);
+	}
+
+	@Override
+	public List<Resources> queryAllMenus(Resources resources) {
+		Example example = new Example(Resources.class);
+		Example.Criteria criteria = example.createCriteria();
+		if (resources.getType() != null) {
+			criteria.andEqualTo("type", resources.getType());
+		}
+		List<Resources> list = selectByExample(example);
+		return list;
 	}
 
 }
