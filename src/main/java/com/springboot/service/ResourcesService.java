@@ -19,4 +19,6 @@ public interface ResourcesService extends BaseService<Resources>{
     PageInfo<Resources> selectByPage(Integer pageNum, Integer pageSize);
     
     List<Resources> queryAllMenus(Resources resources);
+    
+    void delete(String[] ids);
 }

@@ -5,12 +5,15 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.springboot.mapper.ResourcesMapper;
 import com.springboot.model.Resources;
 import com.springboot.service.ResourcesService;
+import com.springboot.service.RoleResourcesService;
+import com.springboot.util.StringUtil;
 
 import tk.mybatis.mapper.entity.Example;
 
@@ -19,6 +22,8 @@ public class ResourcesServiceImpl extends BaseServiceImpl<Resources> implements 
 
 	@Autowired
 	private ResourcesMapper resourcesMapper;
+	@Autowired
+	private RoleResourcesService roleResourcesService;
 
 	@Override
 	public PageInfo<Resources> selectByPage(Resources resources, int start, int length) {
@@ -63,6 +68,21 @@ public class ResourcesServiceImpl extends BaseServiceImpl<Resources> implements 
 		}
 		List<Resources> list = selectByExample(example);
 		return list;
+	}
+
+	@Override
+	@Transactional
+	public void delete(String[] ids) {
+		if (ids.length > 0) {
+			for (int i = 0; i < ids.length; i++) {
+				String id = ids[i];
+				if (StringUtil.isNotEmpty(id)) {
+					roleResourcesService.deleteByResouceId(Integer.parseInt(id));
+					resourcesMapper.deleteByPrimaryKey(Integer.parseInt(id));
+				}
+			}
+		}
+
 	}
 
 }

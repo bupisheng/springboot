@@ -5,4 +5,9 @@
     <id column="role_id" jdbcType="INTEGER" property="roleId" />
     <id column="resources_id" jdbcType="INTEGER" property="resourcesId" />
   </resultMap>
+  
+  <delete id="deleteByResouceId">
+    delete from t_role_resources where resources_id = #{resourceId} 
+  </delete>
+  
 </mapper>

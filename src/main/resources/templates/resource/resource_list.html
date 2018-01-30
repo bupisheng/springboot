@@ -22,15 +22,16 @@
 			class="layui-icon" style="line-height: 30px">ဂ</i></a>
 	</div>
 	<form class="layui-form x-center" th:action="@{/back/resource/list}"
-			style="width: 80%" method="get" id="conditionSearch">
-			<input type="hidden" th:value="${page.pageNum}" name="pageNum" />
-		</form>
+		style="width: 80%" method="get" id="conditionSearch">
+		<input type="hidden" th:value="${page.pageNum}" name="pageNum" />
+	</form>
 	<div class="x-body">
-		<form class="layui-form x-center" action="" style="width: 70%">
+		<form class="layui-form x-center" th:action="@{/back/resource/add}"
+			method="post" style="width: 70%">
 			<div class="layui-form-pane" style="margin-top: 15px;">
 				<div class="layui-form-item">
 					<div class="layui-input-inline">
-						<select name="parentId">
+						<select name="parentId" lay-verify="isNull">
 							<option value="">请选择父级菜单</option>
 							<option value="0">无</option>
 							<option th:each="parent:${parents}" th:value="${parent.id}"
@@ -39,14 +40,21 @@
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="resUrl" placeholder="资源路径"
-							autocomplete="off" class="layui-input" />
+							autocomplete="off" class="layui-input" lay-verify="isNull" />
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="name" placeholder="资源名称"
-							autocomplete="off" class="layui-input" />
+							autocomplete="off" class="layui-input" lay-verify="isNull" />
+					</div>
+					<div class="layui-input-inline">
+						<select name="type" lay-verify="isNull">
+							<option value="">请选择类型</option>
+							<option value="1">菜单</option>
+							<option value="2">按钮</option>
+						</select>
 					</div>
 					<div class="layui-input-inline" style="width: 80px">
-						<button class="layui-btn" lay-submit="" lay-filter="*">
+						<button class="layui-btn" lay-submit="" lay-filter="add">
 							<i class="layui-icon">&#xe608;</i>添加
 						</button>
 					</div>
@@ -63,27 +71,30 @@
 		<table class="layui-table">
 			<thead>
 				<tr>
-					<th><input type="checkbox" name="" value="" /></th>
+					<th><input type="checkbox" name="allCheck" value="" /></th>
 					<th>ID</th>
 					<th>资源名称</th>
 					<th>资源路径</th>
+					<th>类型</th>
 					<th>父级名称</th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<tbody id="x-link">
 				<tr th:each="resource:${page.list}">
-					<td><input type="checkbox" th:value="${resource.id}" name="" /></td>
+					<td><input type="checkbox" th:value="${resource.id}"
+						name="single" /></td>
 					<td th:text="${resource.id}"></td>
 					<td th:text="${resource.name}"></td>
 					<td th:text="${resource.resUrl}"></td>
+					<td th:text="${resource.type == 1 ?'菜单':'按钮'}"></td>
 					<td
 						th:text="${resource.parentName == null ?'无':resource.parentName}"></td>
 					<td class="td-manage"><input type="hidden"
 						th:value="${resource.id}" /> <a title="编辑" href="javascript:;"
 						onclick="rule_edit('编辑','rule-edit.html','','510')" class="ml-5"
 						style="text-decoration: none"> <i class="layui-icon">&#xe642;</i>
-					</a> <a title="删除" href="javascript:;" onclick="rule_del(this,'1')"
+					</a> <a title="删除" href="javascript:;" onclick="rule_del(this)"
 						style="text-decoration: none"> <i class="layui-icon">&#xe640;</i>
 					</a></td>
 				</tr>
@@ -109,15 +120,21 @@
 					curr:[[${page.pageNum}]]
 				});
               
+	          	form.verify({
+	          	  isNull: function(value, item){ //value：表单的值、item：表单的DOM对象
+	          	    if(value == "" || value == null){
+	          	    	return "请填写完整";
+	          	    }
+	          	  }
+	          	});
+	          	
               //监听提交
-              form.on('submit(*)', function(data){
-                console.log(data);
-                //发异步，把数据提交给php
-                layer.alert("增加成功", {icon: 6});
-                $('#x-link').prepend('<tr><td><input type="checkbox" value="1" name="" /></td><td>1</td><td>'+
-                		data.field.rules+'</td><td>'+data.field.name+'</td><td>'+data.field.cname+
-                		'</td><td class="td-manage"><a title="编辑" href="javascript:;" onclick="rule_edit(\'编辑\',\'link-edit.html\',\'4\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="layui-icon">&#xe642;</i></a><a title="删除" href="javascript:;" onclick="rule_del(this,\'1\')" style="text-decoration:none"><i class="layui-icon">&#xe640;</i></a></td></tr>');
-                return false;
+              form.on('submit(add)', function(data){
+            	  layer.msg('新增成功', {
+						icon : 1,
+						time : 1500
+				   });
+                return true;
               });
               
               $("#page").find("a").click(function(){
@@ -125,18 +142,65 @@
   				$("input[name='pageNum']").val(pageNum);
   				$("#conditionSearch").submit();
   			  });
+              
+              //全选返选
+              $("input[name='allCheck']").click(function(){
+            	  if($(this).prop("checked")){
+            		  $("input[name='single']").prop("checked",true);
+            	  }else{
+            		  $("input[name='single']").prop("checked",false);
+            	  }
+              });
+              
+              $("input[name='single']").click(function(){
+            	  var len = $("input[name='single']").length;
+            	  var checkedLen = $("input[name='single']:checked").length;
+            	  if(len == checkedLen){
+            		  $("input[name='allCheck']").prop("checked",true);
+            	  }else{
+            		  $("input[name='allCheck']").prop("checked",false);
+            	  }
+              });
+              
             });
 
 
             //批量删除提交
              function delAll () {
+            	var ids = new Array();
+            	var len = $("input[name='single']:checked").length;
+            	if(len == 0 ){
+            		layer.msg("请选择需要删除的资源", {
+						icon : 7,
+						time : 1500
+					});
+            		return false;
+            	}
+            	$("input[name='single']:checked").each(function(){
+            		ids.push($(this).val());
+            	});
+            	
                 layer.confirm('确认要删除吗？',function(index){
-                    //捉到所有被选中的，发异步进行删除
-                    layer.msg('删除成功', {icon: 1});
+                    $.ajax({
+    					type : "POST",
+    					url : [[@{/back/resource/del}]],
+    					data : {
+    						ids:ids
+    					},
+    					success : function(data) {
+    						if (data.res == 200) {
+    			                 layer.msg(data.msg,{icon:1,time:1500});
+    			                 $("#conditionSearch").submit();
+    						} else {
+    							layer.msg(data.msg, {
+    								icon : 7,
+    								time : 1500
+    							});
+    						}
+    					}
+    				});
                 });
              }
-            
-            
 
             //-编辑
             function rule_edit (title,url,id,w,h) {
@@ -144,13 +208,35 @@
             }
             
             /*删除*/
-            function rule_del(obj,id){
+            function rule_del(obj){
+            	var ids = new Array();
+            	var id = $(obj).siblings("input[type='hidden']").val();
+            	ids.push(id);
                 layer.confirm('确认要删除吗？',function(index){
-                    //发异步删除数据
-                    $(obj).parents("tr").remove();
-                    layer.msg('已删除!',{icon:1,time:1000});
+                  //发异步删除数据
+                  $.ajax({
+					type : "POST",
+					url : [[@{/back/resource/del}]],
+					data : {
+						ids:ids
+					},
+					success : function(data) {
+						if (data.res == 200) {
+							 $(obj).parents("tr").remove();
+			                 layer.msg(data.msg,{icon:1,time:1500});
+						} else {
+							layer.msg(data.msg, {
+								icon : 7,
+								time : 1500
+							});
+						}
+					}
+				});
+                   
                 });
             }
+            
+          
             </script>
 </body>
 </html>

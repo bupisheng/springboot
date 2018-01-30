@@ -67,59 +67,28 @@ public class ResourceController {
 		return "resource/resource_list";
 	}
 
-	// @GetMapping("/toAdd")
-	// public String toAdd(HttpServletRequest request, Model model) {
-	// List<Role> list = roleService.selectByExample(null);
-	// model.addAttribute("roles", list);
-	// return "admin/admin_add";
-	// }
-	//
-	// @ResponseBody
-	// @PostMapping("/add")
-	// public Result add(Admin admin, String roleId, HttpServletRequest request)
-	// {
-	// LOGGER.info("新增后台用户admin={}，roleId={}", JSONUtil.objectToJson(admin),
-	// roleId);
-	// try {
-	// if (StringUtil.isEmpty(admin.getUsername()) ||
-	// StringUtil.isEmpty(admin.getPassword())
-	// || StringUtil.isEmpty(roleId)) {
-	// return ResultUtil.error(ResultConst.CODE_500, ResultConst.PARAM_ERROR);
-	// }
-	// Admin loadAdmin = adminService.selectByUsername(admin.getUsername());
-	// if (null != loadAdmin) {
-	// return ResultUtil.error(ResultConst.CODE_500,
-	// ResultConst.USERNAME_IS_EXIST);
-	// }
-	// adminService.save(admin, roleId);
-	// return ResultUtil.success(ResultConst.CODE_200,
-	// ResultConst.SAVE_SUCCESS);
-	// } catch (Exception e) {
-	// LOGGER.error("新增后台用户出现异常e={}", e.getMessage(), e);
-	// return ResultUtil.error(ResultConst.CODE_500, ResultConst.SAVE_FAIL);
-	// }
-	// }
-	//
-	// @ResponseBody
-	// @PostMapping("/updateStatus")
-	// public Result updateStatus(String id) {
-	// LOGGER.info("修改状态id={}", id);
-	// try {
-	// Admin admin = adminService.selectByKey(id);
-	// Admin updateAdmin = new Admin();
-	// updateAdmin.setId(id);
-	// if (admin.getStatus() == ConstantUtil.STATUS_ENABLE) {
-	// updateAdmin.setStatus(ConstantUtil.STATUS_UNENABLE);
-	// } else {
-	// updateAdmin.setStatus(ConstantUtil.STATUS_ENABLE);
-	// }
-	// adminService.updateNotNull(updateAdmin);
-	// return ResultUtil.success(ResultConst.CODE_200,
-	// ResultConst.UPDATE_SUCCESS);
-	// } catch (Exception e) {
-	// LOGGER.error("修改状态出现异常e={}", e.getMessage(), e);
-	// return ResultUtil.error(ResultConst.CODE_500, ResultConst.UPDATE_FAIL);
-	// }
-	// }
+	@PostMapping("/add")
+	public String add(Resources resources, HttpServletRequest request) {
+		LOGGER.info("新增资源resources={}", JSONUtil.objectToJson(resources));
+		try {
+			resourcesService.save(resources);
+		} catch (Exception e) {
+			LOGGER.error("新增资源出现异常e={}", e.getMessage(), e);
+		}
+		return "redirect:list";
+	}
+
+	@ResponseBody
+	@PostMapping("/del")
+	public Result del(@RequestParam(name="ids[]")String[] ids) {
+		LOGGER.info("资源删除的ids={}",JSONUtil.objectToJson(ids));
+		try {
+		    resourcesService.delete(ids);
+			return ResultUtil.success(ResultConst.CODE_200, ResultConst.DELETE_SUCCESS);
+		} catch (Exception e) {
+			LOGGER.error("资源删除出现异常e={}", e.getMessage(), e);
+			return ResultUtil.error(ResultConst.CODE_500, ResultConst.DELETE_FAIL);
+		}
+	}
 
 }
