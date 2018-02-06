@@ -21,4 +21,6 @@ public interface ResourcesService extends BaseService<Resources>{
     List<Resources> queryAllMenus(Resources resources);
     
     void delete(String[] ids);
+    
+    Resources queryResourceWithParent(Resources resources);
 }

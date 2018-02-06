@@ -90,5 +90,14 @@ public class ResourceController {
 			return ResultUtil.error(ResultConst.CODE_500, ResultConst.DELETE_FAIL);
 		}
 	}
+	
+	@GetMapping("/toEdit")
+	public String toEdit(String id,Model model){
+		Resources resources = resourcesService.selectByKey(Integer.parseInt(id));
+		List<Resources> parents = resourcesService.queryAllMenus(resources);
+		model.addAttribute("parents", parents);
+		model.addAttribute("resources", resources);
+		return "resource/resource_edit";
+	}
 
 }

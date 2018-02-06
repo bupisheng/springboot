@@ -53,6 +53,10 @@
 							<option value="2">按钮</option>
 						</select>
 					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="sort" placeholder="排序"
+							autocomplete="off" class="layui-input" lay-verify="isNull" />
+					</div>
 					<div class="layui-input-inline" style="width: 80px">
 						<button class="layui-btn" lay-submit="" lay-filter="add">
 							<i class="layui-icon">&#xe608;</i>添加
@@ -92,7 +96,7 @@
 						th:text="${resource.parentName == null ?'无':resource.parentName}"></td>
 					<td class="td-manage"><input type="hidden"
 						th:value="${resource.id}" /> <a title="编辑" href="javascript:;"
-						onclick="rule_edit('编辑','rule-edit.html','','510')" class="ml-5"
+						onclick="rule_edit('编辑',this,'600','510')" class="ml-5"
 						style="text-decoration: none"> <i class="layui-icon">&#xe642;</i>
 					</a> <a title="删除" href="javascript:;" onclick="rule_del(this)"
 						style="text-decoration: none"> <i class="layui-icon">&#xe640;</i>
@@ -203,8 +207,9 @@
              }
 
             //-编辑
-            function rule_edit (title,url,id,w,h) {
-                x_admin_show(title,url,w,h); 
+            function rule_edit (title,obj,w,h) {
+            	var id = $(obj).siblings("input[type='hidden']").val();
+                x_admin_show(title,[[@/back/resource/toEdit?id=]]+id,w,h); 
             }
             
             /*删除*/

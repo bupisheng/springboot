@@ -85,4 +85,10 @@ public class ResourcesServiceImpl extends BaseServiceImpl<Resources> implements 
 
 	}
 
+	@Override
+	public Resources queryResourceWithParent(Resources resources) {
+		
+		return null;
+	}
+
 }

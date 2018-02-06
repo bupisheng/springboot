@@ -60,4 +60,17 @@
 		FROM t_resources
 		ORDER BY sort ASC
 	</select>
+	
+	<select id="queryResourceWithParent" resultType="com.springboot.model.Resources">
+	  SELECT
+		id id,
+		name name,
+		parent_id parentId,
+		res_url resUrl,
+		TYPE type,
+		sort sort,
+		(SELECT name FROM t_resources WHERE id = parentId) AS parentName
+		FROM t_resources
+		where id=#{resource.id}
+	</select>
 </mapper>

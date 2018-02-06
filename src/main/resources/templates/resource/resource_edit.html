@@ -1,54 +1,55 @@
 <!DOCTYPE html>
-<html>
-    
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="utf-8">
+        <meta charset="utf-8"/>
         <title>
-            素材牛Lay1.0
         </title>
-        <meta name="renderer" content="webkit">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="format-detection" content="telephone=no">
-        <link rel="stylesheet" href="./css/x-admin.css" media="all">
+        <meta name="renderer" content="webkit"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <link rel="stylesheet" th:href="@{/css/x-admin.css}" media="all"/>
     </head>
     
     <body>
         <div class="x-body">
             <form class="layui-form">
+            <input type="hidden" name="id" th:value="${resources.id}" />
                 <div class="layui-form-item">
                     <label for="username" class="layui-form-label">
-                        <span class="x-red">*</span>登录名
+                        <span class="x-red">*</span>资源名称
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="username" name="username" required="" lay-verify="required" value="admin" 
-                        autocomplete="off" class="layui-input">
+                        <input type="text" id="name" name="name" required="" lay-verify="required" th:value="${resources.name}" 
+                        autocomplete="off" class="layui-input"/>
                     </div>
                     <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>将会成为您唯一的登入名
+                        <span class="x-red">*</span>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label for="phone" class="layui-form-label">
-                        <span class="x-red">*</span>手机
+                        <span class="x-red">*</span>资源路径
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="phone" value="13671989456" name="phone" required="" lay-verify="phone"
-                        autocomplete="off" class="layui-input">
+                        <input type="text" id="resUrl" th:value="${resources.resUrl}" name="resUrl" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input"/>
                     </div>
                     <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>将会成为您唯一的登入名
+                        <span class="x-red">*</span>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label for="L_email" class="layui-form-label">
-                        <span class="x-red">*</span>邮箱
+                        <span class="x-red">*</span>父级
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="L_email" name="email" required="" lay-verify="email" value="826096331@qq.com"
-                        autocomplete="off" class="layui-input">
+                      <select name="parentId">
+                        <option value="0">无</option>
+                        <option th:value="${parent.id}" th:text="${parent.name}"  selected="${parent.id == resources.parentId ?'selected':''}"></option>
+                      </select>
                     </div>
                     <div class="layui-form-mid layui-word-aux">
                         <span class="x-red">*</span>
@@ -56,14 +57,12 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="role" class="layui-form-label">
-                        <span class="x-red">*</span>角色
+                        <span class="x-red">*</span>类型
                     </label>
                     <div class="layui-input-inline">
-                      <select name="role">
-                        <option value="">请选择角色</option>
-                        <option value="超级管理员" selected="">超级管理员</option>
-                        <option value="编辑人员">编辑人员</option>
-                        <option value="问题维护">问题维护</option>
+                      <select name="type">
+                       <option th:each="parent:${parents}" th:value="${parent.id}">菜单</option>
+					   <option value="2">按钮</option>
                       </select>
                     </div>
                 </div>
