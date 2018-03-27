@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.springboot.aop.SystemLogAop;
 import com.springboot.model.Admin;
 import com.springboot.model.Role;
 import com.springboot.service.AdminService;
@@ -46,6 +47,7 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
+	@SystemLogAop(module="管理员模块",methods="管理员列表")
 	@GetMapping("/list")
 	public String list(HttpServletRequest request, Admin admin, @RequestParam(defaultValue = "1") Integer pageNum,
 			@RequestParam(defaultValue = "10") Integer pageSize, String beginTime, String endTime, Model model) {
@@ -71,6 +73,7 @@ public class AdminController {
 		return "admin/admin_add";
 	}
 
+	@SystemLogAop(module="管理员模块",methods="添加管理员")
 	@ResponseBody
 	@PostMapping("/add")
 	public Result add(Admin admin, String roleId, HttpServletRequest request) {
@@ -92,6 +95,7 @@ public class AdminController {
 		}
 	}
 
+	@SystemLogAop(module="管理员模块",methods="修改管理员状态")
 	@ResponseBody
 	@PostMapping("/updateStatus")
 	public Result updateStatus(String id) {
