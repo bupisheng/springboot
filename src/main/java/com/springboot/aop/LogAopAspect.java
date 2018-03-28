@@ -3,8 +3,6 @@ package com.springboot.aop;
 import java.lang.reflect.Method;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;

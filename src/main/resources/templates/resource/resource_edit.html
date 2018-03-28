@@ -1,151 +1,145 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="utf-8"/>
-        <title>
-        </title>
-        <meta name="renderer" content="webkit"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-        <meta name="apple-mobile-web-app-capable" content="yes"/>
-        <meta name="format-detection" content="telephone=no"/>
-        <link rel="stylesheet" th:href="@{/css/x-admin.css}" media="all"/>
-    </head>
-    
-    <body>
-        <div class="x-body">
-            <form class="layui-form">
-            <input type="hidden" name="id" th:value="${resources.id}" />
-                <div class="layui-form-item">
-                    <label for="username" class="layui-form-label">
-                        <span class="x-red">*</span>资源名称
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="text" id="name" name="name" required="" lay-verify="required" th:value="${resources.name}" 
-                        autocomplete="off" class="layui-input"/>
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="phone" class="layui-form-label">
-                        <span class="x-red">*</span>资源路径
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="text" id="resUrl" th:value="${resources.resUrl}" name="resUrl" required="" lay-verify="required"
-                        autocomplete="off" class="layui-input"/>
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="L_email" class="layui-form-label">
-                        <span class="x-red">*</span>父级
-                    </label>
-                    <div class="layui-input-inline">
-                      <select name="parentId">
-                        <option value="0">无</option>
-                        <option th:value="${parent.id}" th:text="${parent.name}"  selected="${parent.id == resources.parentId ?'selected':''}"></option>
-                      </select>
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="role" class="layui-form-label">
-                        <span class="x-red">*</span>类型
-                    </label>
-                    <div class="layui-input-inline">
-                      <select name="type">
-                       <option th:each="parent:${parents}" th:value="${parent.id}">菜单</option>
-					   <option value="2">按钮</option>
-                      </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="L_pass" class="layui-form-label">
-                        <span class="x-red">*</span>密码
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="password" id="L_pass" name="pass" required="" lay-verify="pass"
-                        autocomplete="off" class="layui-input" value="123456">
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">
-                        6到16个字符
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="L_repass" class="layui-form-label">
-                        <span class="x-red">*</span>确认密码
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="password" id="L_repass" name="repass" required="" lay-verify="repass" value="123456" 
-                        autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="L_repass" class="layui-form-label">
-                    </label>
-                    <button  class="layui-btn" lay-filter="save" lay-submit="">
-                        保存
-                    </button>
-                </div>
-            </form>
-        </div>
-        <script src="./lib/layui/layui.js" charset="utf-8">
-        </script>
-        <script src="./js/x-layui.js" charset="utf-8">
-        </script>
-        <script>
-            layui.use(['form','layer'], function(){
-                $ = layui.jquery;
-              var form = layui.form()
-              ,layer = layui.layer;
-            
-              //自定义验证规则
-              form.verify({
-                nikename: function(value){
-                  if(value.length < 5){
-                    return '昵称至少得5个字符啊';
-                  }
-                }
-                ,pass: [/(.+){6,12}$/, '密码必须6到12位']
-                ,repass: function(value){
-                    if($('#L_pass').val()!=$('#L_repass').val()){
-                        return '两次密码不一致';
-                    }
-                }
-              });
+<head>
+<meta charset="utf-8" />
+<title></title>
+<meta name="renderer" content="webkit" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" th:href="@{/css/x-admin.css}" media="all" />
+</head>
 
-              //监听提交
-              form.on('submit(save)', function(data){
-                console.log(data);
-                //发异步，把数据提交给php
-                layer.alert("保存成功", {icon: 6},function () {
-                    // 获得frame索引
-                    var index = parent.layer.getFrameIndex(window.name);
-                    //关闭当前frame
-                    parent.layer.close(index);
-                });
-                return false;
-              });
-              
-              
-            });
-        </script>
-        <script>
-        var _hmt = _hmt || [];
-        (function() {
-          var hm = document.createElement("script");
-          hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-          var s = document.getElementsByTagName("script")[0]; 
-          s.parentNode.insertBefore(hm, s);
-        })();
-        </script>
-    </body>
+<body>
+	<div class="x-body">
+		<form class="layui-form">
+			<input type="hidden" name="id" th:value="${resources.id}"/>
+			<div class="layui-form-item">
+				<label  class="layui-form-label"> <span
+					class="x-red">*</span>资源名称
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" id="name" name="name" required=""
+						lay-verify="required" th:value="${resources.name}"
+						autocomplete="off" class="layui-input" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label  class="layui-form-label"> <span
+					class="x-red">*</span>资源路径
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" id="resUrl" th:value="${resources.resUrl}"
+						name="resUrl" required="" lay-verify="required" autocomplete="off"
+						class="layui-input" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label  class="layui-form-label"> <span
+					class="x-red">*</span>父级
+				</label>
+				<div class="layui-input-inline">
+				    <input type="hidden" th:value="${resources.parentId}" name="parentId"/>
+					<select name="parentId">
+						<option  th:value="0" >无</option>
+						<option  th:each="parent:${parents}" th:value="${parent.id}" th:text="${parent.name}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"> <span
+					class="x-red">*</span>类型
+				</label>
+				<div class="layui-input-inline">
+		            <input type="hidden" th:value="${resources.type}" name="type"/>
+					<select name="type">
+						<option th:value="1" >菜单</option>
+						<option th:value="2" >按钮</option>
+					</select>
+				</div>
+			</div>
+		   <div class="layui-form-item">
+				<label class="layui-form-label"> <span
+					class="x-red">*</span>排序
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" id="sort" th:value="${resources.sort}"
+						name="sort" required="" lay-verify="required" autocomplete="off"
+						class="layui-input" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"> </label>
+				<button class="layui-btn" lay-filter="save" lay-submit="">
+					保存</button>
+			</div>
+		</form>
+	</div>
+	<script th:src="@{/lib/layui/layui.js}" charset="utf-8">
+		
+	</script>
+	<script th:src="@{/js/x-layui.js}" charset="utf-8">
+		
+	</script>
+	<script  th:inline="javascript">
+		layui.use([ 'form', 'layer' ], function() {
+			$ = layui.jquery;
+			var form = layui.form(), layer = layui.layer;
+			var type = $("input[name='type']").val();
+			var parentId = $("input[name='parentId']").val();
+			
+			$("select[name='type']").find("option[value="+type+"]").attr("selected","selected");
+			$("select[name='parentId']").find("option[value="+parentId+"]").attr("selected","selected");
+			
+			//监听提交
+			form.on('submit(save)', function(data) {
+                 
+				var id = $("input[name='id']").val();
+				var name = $("input[name='name']").val();
+				var sort = $("input[name='sort']").val();
+				var type = $("select[name='type']").val();
+				var resUrl = $("input[name='resUrl']").val();
+				var parentId = $("select[name='parentId']").val();
+				
+				$.ajax({
+					type : "POST",
+					url : [[@{/back/resource/update}]],
+					data : {
+						id : id,
+						sort : sort,
+						type : type,
+						name : name,
+						resUrl : resUrl,
+						parentId : parentId
+					},
+					success : function(data) {
+						if (data.res == 200) {
+							layer.alert(data.msg, {
+								icon : 6
+							}, function() {
+								$("#conditionSearch").submit();
+								// 获得frame索引
+								var index = parent.layer
+										.getFrameIndex(window.name);
+								//关闭当前frame
+								parent.layer.close(index);
+							});
+						} else {
+							layer.msg(data.msg, {
+								icon : 7,
+								time : 1500
+							});
+						}
+					}
+				});
+				return false;
+			});
+
+		});
+	</script>
+</body>
 
 </html>

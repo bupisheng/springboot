@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.springboot.aop.SystemLogAop;
 import com.springboot.model.Admin;
 import com.springboot.model.Resources;
 import com.springboot.model.Role;
@@ -80,19 +81,19 @@ public class ResourceController {
 
 	@ResponseBody
 	@PostMapping("/del")
-	public Result del(@RequestParam(name="ids[]")String[] ids) {
-		LOGGER.info("资源删除的ids={}",JSONUtil.objectToJson(ids));
+	public Result del(@RequestParam(name = "ids[]") String[] ids) {
+		LOGGER.info("资源删除的ids={}", JSONUtil.objectToJson(ids));
 		try {
-		    resourcesService.delete(ids);
+			resourcesService.delete(ids);
 			return ResultUtil.success(ResultConst.CODE_200, ResultConst.DELETE_SUCCESS);
 		} catch (Exception e) {
 			LOGGER.error("资源删除出现异常e={}", e.getMessage(), e);
 			return ResultUtil.error(ResultConst.CODE_500, ResultConst.DELETE_FAIL);
 		}
 	}
-	
+
 	@GetMapping("/toEdit")
-	public String toEdit(String id,Model model){
+	public String toEdit(String id, Model model) {
 		Resources resources = resourcesService.selectByKey(Integer.parseInt(id));
 		List<Resources> parents = resourcesService.queryAllMenus(resources);
 		model.addAttribute("parents", parents);
@@ -100,4 +101,17 @@ public class ResourceController {
 		return "resource/resource_edit";
 	}
 
+	@SystemLogAop(module = "资源管理", methods = "修改资源")
+	@ResponseBody
+	@PostMapping("/update")
+	public Result update(Resources resources) {
+		LOGGER.info("资源修改resources={}", JSONUtil.objectToJson(resources));
+		try {
+			resourcesService.updateNotNull(resources);
+			return ResultUtil.success(ResultConst.CODE_200, ResultConst.UPDATE_SUCCESS);
+		} catch (Exception e) {
+			LOGGER.error("资源修改出现异常e={}", e.getMessage(), e);
+			return ResultUtil.error(ResultConst.CODE_500, ResultConst.DELETE_FAIL);
+		}
+	}
 }

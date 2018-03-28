@@ -65,7 +65,7 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin> implements AdminSer
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-	public void delAdmin(Integer adminId) {
+	public void delAdmin(String adminId) {
 		// 删除用户表
 		mapper.deleteByPrimaryKey(adminId);
 		// 删除用户角色表

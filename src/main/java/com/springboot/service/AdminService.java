@@ -11,7 +11,7 @@ public interface AdminService extends BaseService<Admin> {
 
 	Admin selectByUsername(String username);
 
-	void delAdmin(Integer adminId);
+	void delAdmin(String adminId);
 	
 	void save(Admin admin,String roleId);
 }

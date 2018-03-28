@@ -116,5 +116,19 @@ public class AdminController {
 			return ResultUtil.error(ResultConst.CODE_500, ResultConst.UPDATE_FAIL);
 		}
 	}
+	
+	@SystemLogAop(module="管理员模块",methods="删除管理员")
+	@ResponseBody
+	@PostMapping("/del")
+	public Result delete(String id) {
+		LOGGER.info("删除管理员id={}", id);
+		try {
+			adminService.delAdmin(id);
+			return ResultUtil.success(ResultConst.CODE_200, ResultConst.DELETE_SUCCESS);
+		} catch (Exception e) {
+			LOGGER.error("删除管理员出现异常e={}", e.getMessage(), e);
+			return ResultUtil.error(ResultConst.CODE_500, ResultConst.DELETE_FAIL);
+		}
+	}
 
 }

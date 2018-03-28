@@ -257,14 +257,35 @@
 			x_admin_show(title, url, w, h);
 		}
 		/*删除*/
-		function admin_del(obj, id) {
+		function admin_del(obj) {
+			var id = $(obj).siblings("input[type='hidden']").val();
 			layer.confirm('确认要删除吗？', function(index) {
 				//发异步删除数据
-				$(obj).parents("tr").remove();
-				layer.msg('已删除!', {
-					icon : 1,
-					time : 1000
-				});
+				$.ajax({
+					type : "POST",
+					url : [[@{/back/admin/del}]],
+					data : {
+						id : id
+					},
+					success : function(data) {
+						if (data.res == 200) {
+							$(obj).parents("tr").remove();
+							layer.msg('已删除!', {
+								icon : 1,
+								time : 1000
+							});
+							$("#conditionSearch").submit();
+						} else {
+							layer.msg(data.msg, {
+								icon : 7,
+								time : 1500
+							});
+						}
+					}
+				});	
+				
+				
+				
 			});
 		}
 	</script>
