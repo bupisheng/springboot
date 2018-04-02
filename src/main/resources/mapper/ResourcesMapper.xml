@@ -8,17 +8,18 @@
 		<result column="type" jdbcType="INTEGER" property="type" />
 		<result column="parent_id" jdbcType="INTEGER" property="parentId" />
 		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="permission" jdbcType="VARCHAR" property="permission"/>
 	</resultMap>
 
 	<select id="queryAll" resultMap="BaseResultMap">
-		SELECT id,name,parent_id,res_url,type,sort
+		SELECT id,name,parent_id,res_url,type,sort,permission
 		FROM t_resources
 		ORDER BY sort ASC
 	</select>
 
 	<select id="loadAdminResources" parameterType="java.util.HashMap"
 		resultMap="BaseResultMap">
-		SELECT re.id,re.name,re.parent_id,re.res_url
+		SELECT re.id,re.name,re.parent_id,re.res_url,re.permission
 		FROM t_resources re LEFT JOIN t_role_resources rr
 		ON re.id = rr.resources_id
 		LEFT JOIN t_admin_role ur
@@ -36,7 +37,7 @@
 
 	<select id="queryResourcesListWithSelected" parameterType="int"
 		resultMap="BaseResultMap">
-		SELECT re.id,re.name,re.parent_id,re.res_url,re.type,
+		SELECT re.id,re.name,re.parent_id,re.res_url,re.type,re.permission
 		(CASE WHEN
 		EXISTS(SELECT 1
 		FROM t_role_resources rr WHERE rr.resources_id=re.id
@@ -56,6 +57,7 @@
 		res_url resUrl,
 		TYPE type,
 		sort sort,
+		permission permission,
 		(SELECT name FROM t_resources WHERE id = parentId) AS parentName
 		FROM t_resources
 		ORDER BY sort ASC
@@ -69,6 +71,7 @@
 		res_url resUrl,
 		TYPE type,
 		sort sort,
+		permission permission,
 		(SELECT name FROM t_resources WHERE id = parentId) AS parentName
 		FROM t_resources
 		where id=#{resource.id}

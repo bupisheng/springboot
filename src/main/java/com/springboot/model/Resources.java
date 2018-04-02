@@ -34,6 +34,7 @@ public class Resources {
 	private Integer type;// 资源类型 1:菜单 2：按钮
 	private Integer parentId;// 父资源
 	private Integer sort;// 排序
+	private String permission;//权限标识
 	@Transient
 	private String checked; // 是否选择
 	@Transient

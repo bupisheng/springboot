@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.springboot.model.Resources;
 import com.springboot.model.Admin;
 import com.springboot.service.ResourcesService;
+import com.springboot.util.JSONUtil;
 import com.springboot.util.constant.ConstantUtil;
 
 @Controller
@@ -53,6 +54,7 @@ public class IndexController {
 				buildNodes(resource, admin.getId());
 			}
 			model.addAttribute("menus",parentMenus);
+			System.out.println(JSONUtil.objectToJson(parentMenus));
 		} catch (Exception e) {
 			LOGGER.error("获取菜单出现异常e={}", e.getMessage(), e);
 		}

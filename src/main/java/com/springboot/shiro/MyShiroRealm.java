@@ -1,6 +1,8 @@
 package com.springboot.shiro;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,8 @@ import com.springboot.model.Resources;
 import com.springboot.model.Admin;
 import com.springboot.service.ResourcesService;
 import com.springboot.service.AdminService;
+import com.springboot.util.JSONUtil;
+import com.springboot.util.StringUtil;
 import com.springboot.util.constant.ConstantUtil;
 
 public class MyShiroRealm extends AuthorizingRealm{
@@ -43,9 +47,14 @@ public class MyShiroRealm extends AuthorizingRealm{
 		map.put("adminId", admin.getId());
 		List<Resources> resources = resourcesService.loadAdminResources(map);
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+		List<String> resStrList = new ArrayList<>();
 		for (Resources resource : resources) {
-			info.addStringPermission(resource.getResUrl());
+			if (StringUtil.isNotEmpty(resource.getPermission())) {
+				resStrList.add(resource.getPermission());
+			}
 		}
+		System.out.println(JSONUtil.objectToJson(resStrList));
+		info.setStringPermissions(new HashSet<>(resStrList));
 		return info;
 	}
 
